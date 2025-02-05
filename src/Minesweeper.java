@@ -7,11 +7,13 @@ import javax.swing.border.Border;
 
 public class Minesweeper {
 
-    //Class for Minesweeper tile inherits from JButton
+    //Class for Minesweeper tile inherits from JButton. Private because nothing else is gonna need it... I think.
     private class MinesweeperTile extends JButton {
         int rows;
         int columns;
         boolean isMine;
+        boolean isMarked;
+        boolean isRevealed;
 
         MinesweeperTile(int rows, int columns) {
             this.rows = rows;
@@ -21,20 +23,39 @@ public class Minesweeper {
             this.addMouseListener(new MouseAdapter() {
                 @Override
                 public void mouseReleased(MouseEvent e) {
+
+                    //Don't allow interaction with a tile once it has been clicked and revealed.
+                    if(isRevealed) return;
+
+                    //If right-clicked, mark the tile instead of revealing and disabling.
+                    if(e.getButton() == MouseEvent.BUTTON3){
+                        //Unmark if already marked.
+                        if(isMarked){
+                            setText("");
+                            isMarked = false;
+                            return;
+                        }
+                        setText("-");
+                        isMarked = true;
+                        return;
+                    }
+
                     //Disabled button once clicked. Set mines to X and safe tiles to O. This is temporary. TODO: Tiles should display number of adjacent mines, not "O"
                     if(isMine()){
-                        disableTile("X");
+                        revealTile("X");
+                        revealBoard();
                     }
                     else{
-                        disableTile("O");
+                        revealTile("O");
                     }
                 }
             });
         }
 
         //Makes the tile no longer clickable and sets text to whatever is passed as argument.
-        public void disableTile(String text){
+        public void revealTile(String text){
             setText(text);
+            isRevealed = true;
             setEnabled(false);
         }
 
@@ -117,5 +138,11 @@ public class Minesweeper {
         }
 
         frame.setVisible(true);
+    }
+
+    //This function will be used to reveal all tiles upon a game over.
+    //TODO: This entire function :>
+    public void revealBoard(){
+        System.out.println("You lose! But the functionality to end the game hasn't been implemented yet...");
     }
 }
