@@ -41,7 +41,6 @@ public class Minesweeper {
 
     Minesweeper(){
         //Set window parameters
-        frame.setVisible(true);
         frame.setSize(windowWidth, windowHeight);
         frame.setLocationRelativeTo(null);
         frame.setResizable(false);
@@ -71,9 +70,12 @@ public class Minesweeper {
 
                 tile.setFocusable(false);
                 tile.setMargin(new Insets(0, 0, 0, 0));
+                tile.setFont(new Font("Arial", Font.PLAIN, 45));
 
                 playingBoard.add(tile);
             }
         }
+
+        frame.setVisible(true);
     }
 }
