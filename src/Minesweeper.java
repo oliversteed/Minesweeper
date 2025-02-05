@@ -18,17 +18,22 @@ public class Minesweeper {
             this.columns = columns;
         }
 
+        public void setMine(){
+            isMine = true;
+        }
+
         public boolean isMine(){
             return isMine;
         }
     }
 
-    //Class parameters. Need to create an options pane to allow users to specify these.
+    //Class parameters. TODO: Create an options window on start to allow users to specify these, then allow them to launch the game with the specified parameters from this initial options/menu window
     int tileSize = 80;
-    int numberOfRows = 6;
+    int numberOfRows = 10;
     int numberOfColumns = numberOfRows;
     int windowWidth = numberOfColumns * tileSize;
     int windowHeight = numberOfRows * tileSize;
+    int totalMines = 20; //We will start with 20 for now. TODO: This should eventually be user defined and passed into the constructor.
 
     //Initialise objects for constructing the window.
     JFrame frame = new JFrame("Minesweeper");
@@ -62,6 +67,10 @@ public class Minesweeper {
         playingBoard.setLayout(new GridLayout(numberOfRows, numberOfColumns));
         frame.add(playingBoard);
 
+        //Instantiate the Random object for randomly generating mines.
+        Random rand = new Random();
+        int generatedMines = 0;
+
         //Iterate through the grid and add the MinesweeperTile objects.
         for (int row = 0; row < numberOfRows; row++){
             for (int col = 0; col < numberOfColumns; col++){
@@ -71,6 +80,22 @@ public class Minesweeper {
                 tile.setFocusable(false);
                 tile.setMargin(new Insets(0, 0, 0, 0));
                 tile.setFont(new Font("Arial", Font.PLAIN, 45));
+
+                /*
+                 * Random chance for tile to be a mine. This is not ideal currently...
+                 * This method has a chance to not generated the total number of mines.
+                 * On one test run there was only 1 mine (very rare), which would be an instant win... Not ideal
+                 * TODO: Work out a better method of randomly generating mines.
+                 */
+                if((rand.nextInt(100)+1) <= 10 && generatedMines < totalMines){
+                    tile.setMine();
+                    generatedMines++;
+                }
+
+                //Mines will be denoted by X.
+                if(tile.isMine()){
+                    tile.setText("X");
+                }
 
                 playingBoard.add(tile);
             }
