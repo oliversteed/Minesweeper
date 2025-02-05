@@ -13,9 +13,29 @@ public class Minesweeper {
         int columns;
         boolean isMine;
 
-        MinesweeperTile(int rows, int columns){
+        MinesweeperTile(int rows, int columns) {
             this.rows = rows;
             this.columns = columns;
+
+            //Adds functionality to check for mouse clicks once the object is constructed.
+            this.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseReleased(MouseEvent e) {
+                    //Disabled button once clicked. Set mines to X and safe tiles to O. This is temporary. TODO: Tiles should display number of adjacent mines, not "O"
+                    if(isMine()){
+                        disableTile("X");
+                    }
+                    else{
+                        disableTile("O");
+                    }
+                }
+            });
+        }
+
+        //Makes the tile no longer clickable and sets text to whatever is passed as argument.
+        public void disableTile(String text){
+            setText(text);
+            setEnabled(false);
         }
 
         public void setMine(){
@@ -87,14 +107,9 @@ public class Minesweeper {
                  * On one test run there was only 1 mine (very rare), which would be an instant win... Not ideal
                  * TODO: Work out a better method of randomly generating mines.
                  */
-                if((rand.nextInt(100)+1) <= 10 && generatedMines < totalMines){
+                if((rand.nextInt(100)+1) <= 10 && generatedMines < totalMines) {
                     tile.setMine();
                     generatedMines++;
-                }
-
-                //Mines will be denoted by X.
-                if(tile.isMine()){
-                    tile.setText("X");
                 }
 
                 playingBoard.add(tile);
