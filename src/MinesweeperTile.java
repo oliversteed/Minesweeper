@@ -4,17 +4,22 @@ import java.awt.event.MouseEvent;
 
 //Class for Minesweeper tile inherits from JButton.
 public class MinesweeperTile extends JButton {
-    int rows;
-    int columns;
-    boolean isMine;
-    boolean isMarked;
-    boolean isRevealed;
+    //Sets the X and Y coords of the tile, relating to its position in the main game boards 2D array. Final as this cannot change once instantiated.
+    private final int row;
+    private final int column;
+    private int surroundingMines;
+
+    //Sets booleans for checking various statuses of the tile
+    private boolean isMine;
+    private boolean isMarked;
+    private boolean isRevealed;
+    private boolean adjacentMine = false;
 
     Minesweeper currentBoard;
 
-    MinesweeperTile(int rows, int columns, Minesweeper currentBoard) {
-        this.rows = rows;
-        this.columns = columns;
+    MinesweeperTile(int row, int column, Minesweeper currentBoard) {
+        this.row = row;
+        this.column = column;
         this.currentBoard = currentBoard;
 
         //Adds functionality to check for mouse clicks once the object is constructed.
@@ -39,7 +44,7 @@ public class MinesweeperTile extends JButton {
                 }
 
                 //Disabled button once clicked. Set mines to X and safe tiles to O. This is temporary. TODO: Tiles should display number of adjacent mines, not "O"
-                revealTile();
+                revealTile(true);
             }
         });
     }
@@ -48,9 +53,8 @@ public class MinesweeperTile extends JButton {
     Makes the tile no longer clickable and sets text to correspond to whether it was a mine or not.
     If the tile was a mine, this will call gameOver() on the active game board.
      */
-    public void revealTile(){
+    public void revealTile(boolean cascade){
 
-        setText("O");
         isRevealed = true;
         setEnabled(false);
 
@@ -58,14 +62,58 @@ public class MinesweeperTile extends JButton {
             setText("X");
             currentBoard.gameOver();
         }
+        else{
+            //Control when the revealing tiles should cascade.
+            if(cascade) currentBoard.scanAdjacent(this, true);
+        }
     }
 
+    public void increaseSurroundingMines(){
+        surroundingMines++;
+    }
+
+    public int getSurroundingMines(){
+        return surroundingMines;
+    }
+
+    //setter for isMine
     public void setMine(){
         isMine = true;
     }
 
+    //getter for isMine
     public boolean isMine(){
         return isMine;
+    }
+
+    //getter for row index
+    public int getRow(){
+        return row;
+    }
+
+    //getter for column index
+    public int getColumn(){
+        return column;
+    }
+
+    //getter for isRevealed
+    public boolean getRevealed(){
+        return isRevealed;
+    }
+
+    //Getter for adjacentMine
+    public boolean isAdjacentMine(){
+        return adjacentMine;
+    }
+
+    //setter for adjacentMine
+    public void setAdjacentMine(){
+        adjacentMine = true;
+    }
+
+    //Allows other objects to set the text of this object.
+    public void setTileText(String tileText){
+        setText(tileText);
     }
 
 }

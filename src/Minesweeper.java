@@ -1,21 +1,19 @@
 import java.awt.*;
-import java.awt.event.*;
-import java.util.ArrayList;
 import java.util.Random;
 import javax.swing.*;
-import javax.swing.border.Border;
 
 public class Minesweeper {
 
-    //Class parameters. TODO: Create an options window on start to allow users to specify these, then allow them to launch the game with the specified parameters from this initial options/menu window
-    int tileSize = 80;
-    int numberOfRows = 10;
+    //Class parameters. TODO: Create an options window on start to allow users to specify some of these, then allow them to launch the game with the specified parameters from this initial options/menu window
+    int tileSize = 50;
+    int numberOfRows = 20;
     int numberOfColumns = numberOfRows;
     int windowWidth = numberOfColumns * tileSize;
     int windowHeight = numberOfRows * tileSize;
-    int totalMines = 20; //We will start with 20 for now. TODO: This should eventually be user defined and passed into the constructor.
+    int totalMines = 40; //We will start with 40 for now.
 
     boolean gameOverStatus = false;
+    boolean adjacentMine = false;
 
     //Initialise objects for constructing the window.
     JFrame frame = new JFrame("Minesweeper");
@@ -90,13 +88,69 @@ public class Minesweeper {
 
         for(MinesweeperTile[] tileArr : playingBoardArray){
             for(MinesweeperTile tile : tileArr){
-                tile.revealTile();
+                tile.revealTile(false);
             }
         }
     }
 
     public boolean isGameOver(){
         return gameOverStatus;
+    }
+
+    //Iterates across all adjacent tiles to the passed tile.
+    //Cascade determines whether to spread revealed tiles or not.
+    public void scanAdjacent(MinesweeperTile tile, boolean cascade){
+
+        //Gets the coordinates of the passed tile in the 2D array.
+        int row = tile.getRow();
+        int col = tile.getColumn();
+
+        //This iterates through every tile adjacent to the passed tile including itself.
+        for(int r = row - 1; r <= row + 1; r++){
+
+            //Skip iterations with out of bounds indices.
+            if(r < 0 || r >= numberOfRows) continue;
+
+            for(int c = col - 1; c <= col + 1; c++){
+
+                //Skip iterations with out of bounds indices
+                if(c < 0 || c >= numberOfColumns) continue;
+
+                //Prevents the algorithm from passing the original tile
+                if(!(r == row && c == col)) scanTile(playingBoardArray[r][c], tile, cascade);
+
+            }
+        }
+    }
+
+    /*
+    This will take 2 tile objects and do the following based on an evaluation of objects parameters.
+    If the passed tile is a mine, do not reveal.
+    If the passed tile is not a mine, reveal and set the original tile as having an adjacent mine.
+     */
+    private void scanTile(MinesweeperTile tile, MinesweeperTile originalTile, boolean cascade){
+
+        if(tile.isMine()) {
+
+            //If tile was passed has already been marked for surrounding mines, begin counting up surrounding mines and return.
+            if(originalTile.isAdjacentMine()) {
+                originalTile.increaseSurroundingMines();
+                //Set tile text to number of surrounding mines.
+                originalTile.setTileText(Integer.toString(originalTile.getSurroundingMines()));
+                return;
+            }
+
+            originalTile.setAdjacentMine();
+            //if adjacent mine is detected, calls scanAdjacent without cascading to find number of surrounding mines.
+            scanAdjacent(originalTile, false);
+            return; //Do nothing and return if tile is a mine.
+        }
+
+        if(tile.getRevealed()) return; //Do nothing if tile has already been revealed.
+
+        //revealTile() makes a call to iterateAdjacent which should recursively iterate through the board until blocked by mines.
+        tile.revealTile(true);
+
     }
 
 }
