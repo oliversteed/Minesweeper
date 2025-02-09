@@ -15,6 +15,8 @@ public class Minesweeper {
     int windowHeight = numberOfRows * tileSize;
     int totalMines = 20; //We will start with 20 for now. TODO: This should eventually be user defined and passed into the constructor.
 
+    boolean gameOverStatus = false;
+
     //Initialise objects for constructing the window.
     JFrame frame = new JFrame("Minesweeper");
     JLabel titleText = new JLabel();
@@ -79,9 +81,22 @@ public class Minesweeper {
         frame.setVisible(true);
     }
 
-    //TODO: This entire function... Needs to reveal whole board as a game over!
+    //Iterates through each tile and calls its revealTile() method to reveal the entire gameboard when a gameover is triggered.
     public void gameOver(){
-        System.out.println("Game over!");
+
+        if(gameOverStatus) return; //Prevents MinesweeperTile objects from recursively iterating through the entire function when a game over occurs.
+
+        gameOverStatus = true;
+
+        for(MinesweeperTile[] tileArr : playingBoardArray){
+            for(MinesweeperTile tile : tileArr){
+                tile.revealTile();
+            }
+        }
+    }
+
+    public boolean isGameOver(){
+        return gameOverStatus;
     }
 
 }
