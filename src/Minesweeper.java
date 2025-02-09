@@ -11,6 +11,7 @@ public class Minesweeper {
     int windowWidth = numberOfColumns * tileSize;
     int windowHeight = numberOfRows * tileSize;
     int totalMines = 40; //We will start with 40 for now.
+    int numRevealedTiles = 0;
 
     boolean gameOverStatus = false;
     boolean adjacentMine = false;
@@ -23,6 +24,7 @@ public class Minesweeper {
 
     //Stores the tiles in a 2D array
     MinesweeperTile[][] playingBoardArray = new MinesweeperTile[numberOfRows][numberOfColumns];
+    MinesweeperTile[] revealedTiles = new MinesweeperTile[numberOfRows * numberOfColumns];
 
     Minesweeper(){
         //Set window parameters
@@ -88,7 +90,8 @@ public class Minesweeper {
 
         for(MinesweeperTile[] tileArr : playingBoardArray){
             for(MinesweeperTile tile : tileArr){
-                tile.revealTile(false);
+                tile.scanTile();
+                tile.revealTile();
             }
         }
     }
@@ -99,11 +102,14 @@ public class Minesweeper {
 
     //Iterates across all adjacent tiles to the passed tile.
     //Cascade determines whether to spread revealed tiles or not.
-    public void scanAdjacent(MinesweeperTile tile, boolean cascade){
+    public boolean scanAdjacent(MinesweeperTile tile){
 
         //Gets the coordinates of the passed tile in the 2D array.
         int row = tile.getRow();
         int col = tile.getColumn();
+
+        //whether or not a tile was revealed during the run of this function.
+        boolean revealed = false;
 
         //This iterates through every tile adjacent to the passed tile including itself.
         for(int r = row - 1; r <= row + 1; r++){
@@ -117,39 +123,43 @@ public class Minesweeper {
                 if(c < 0 || c >= numberOfColumns) continue;
 
                 //Prevents the algorithm from passing the original tile
-                if(!(r == row && c == col)) scanTile(playingBoardArray[r][c], tile, cascade);
+                if(!(r == row && c == col)){
 
+                    //sets the current adjacent tile to currentScan for easier access.
+                    MinesweeperTile currentScan = playingBoardArray[r][c];
+
+                    //TODO: This line is making the GameOver() function display wrong number of surrounding mines. Fix this.
+                    if(currentScan.getRevealed()) continue; //Don't evaluate already evaluated tiles.
+
+                    //If a surrounding mine is found, halt the cascading process to begin counting how many mines are adjacent.
+                    if(currentScan.isMine()) {
+                        tile.setAdjacentMine();
+                        tile.increaseSurroundingMines();
+                        tile.setTileText(Integer.toString(tile.getSurroundingMines()));
+                    }
+                    //If the evaluated tile is not a mine, reveal it and add it to the array of revealed tiles.
+                    else{
+                        revealedTiles[numRevealedTiles] = currentScan;
+                        numRevealedTiles++;
+                        currentScan.revealTile();
+                        revealed = true;
+                    }
+                }
             }
         }
+
+        return revealed;
     }
 
-    /*
-    This will take 2 tile objects and do the following based on an evaluation of objects parameters.
-    If the passed tile is a mine, do not reveal.
-    If the passed tile is not a mine, reveal and set the original tile as having an adjacent mine.
-     */
-    private void scanTile(MinesweeperTile tile, MinesweeperTile originalTile, boolean cascade){
+    //Evaluates all currently revealed tiles and continues to reveal until all tiles are surrounded by mines.
+    public void cascade(){
+        boolean cascades = false;
 
-        if(tile.isMine()) {
-
-            //If tile was passed has already been marked for surrounding mines, begin counting up surrounding mines and return.
-            if(originalTile.isAdjacentMine()) {
-                originalTile.increaseSurroundingMines();
-                //Set tile text to number of surrounding mines.
-                originalTile.setTileText(Integer.toString(originalTile.getSurroundingMines()));
-                return;
-            }
-
-            originalTile.setAdjacentMine();
-            //if adjacent mine is detected, calls scanAdjacent without cascading to find number of surrounding mines.
-            scanAdjacent(originalTile, false);
-            return; //Do nothing and return if tile is a mine.
+        for(MinesweeperTile tile : revealedTiles){
+            cascades = scanAdjacent(tile);
         }
 
-        if(tile.getRevealed()) return; //Do nothing if tile has already been revealed.
-
-        //revealTile() makes a call to iterateAdjacent which should recursively iterate through the board until blocked by mines.
-        tile.revealTile(true);
+        if(cascades) cascade();
 
     }
 

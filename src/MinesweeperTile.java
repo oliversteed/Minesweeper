@@ -44,7 +44,8 @@ public class MinesweeperTile extends JButton {
                 }
 
                 //Disabled button once clicked. Set mines to X and safe tiles to O. This is temporary. TODO: Tiles should display number of adjacent mines, not "O"
-                revealTile(true);
+                scanTile();
+                revealTile();
             }
         });
     }
@@ -53,7 +54,7 @@ public class MinesweeperTile extends JButton {
     Makes the tile no longer clickable and sets text to correspond to whether it was a mine or not.
     If the tile was a mine, this will call gameOver() on the active game board.
      */
-    public void revealTile(boolean cascade){
+    public void revealTile(){
 
         isRevealed = true;
         setEnabled(false);
@@ -62,10 +63,11 @@ public class MinesweeperTile extends JButton {
             setText("X");
             currentBoard.gameOver();
         }
-        else{
-            //Control when the revealing tiles should cascade.
-            if(cascade) currentBoard.scanAdjacent(this, true);
-        }
+    }
+
+    //Passes the tile to the game board object for evaluating adjacent tiles.
+    public void scanTile(){
+        currentBoard.scanAdjacent(this);
     }
 
     public void increaseSurroundingMines(){
