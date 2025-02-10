@@ -1,6 +1,7 @@
 import java.awt.*;
 import java.util.Random;
 import javax.swing.*;
+import java.util.ArrayList;
 
 public class Minesweeper {
 
@@ -24,7 +25,6 @@ public class Minesweeper {
 
     //Stores the tiles in a 2D array
     MinesweeperTile[][] playingBoardArray = new MinesweeperTile[numberOfRows][numberOfColumns];
-    MinesweeperTile[] revealedTiles = new MinesweeperTile[numberOfRows * numberOfColumns];
 
     Minesweeper(){
         //Set window parameters
@@ -102,7 +102,10 @@ public class Minesweeper {
 
     //Iterates across all adjacent tiles to the passed tile.
     //Cascade determines whether to spread revealed tiles or not.
-    public boolean scanAdjacent(MinesweeperTile tile){
+    public void scanAdjacent(MinesweeperTile tile){
+
+        //Stores revealed tiles
+        ArrayList<MinesweeperTile> revealedTiles = new ArrayList<MinesweeperTile>();
 
         //Gets the coordinates of the passed tile in the 2D array.
         int row = tile.getRow();
@@ -136,31 +139,23 @@ public class Minesweeper {
                         tile.setAdjacentMine();
                         tile.increaseSurroundingMines();
                         tile.setTileText(Integer.toString(tile.getSurroundingMines()));
+                        //return;
                     }
                     //If the evaluated tile is not a mine, reveal it and add it to the array of revealed tiles.
                     else{
-                        revealedTiles[numRevealedTiles] = currentScan;
-                        numRevealedTiles++;
-                        currentScan.revealTile();
-                        revealed = true;
+                        //Stores scanned tiles ready to reveal as long as there are no adjacent mines.
+                        revealedTiles.add(currentScan);
                     }
                 }
             }
         }
 
-        return revealed;
-    }
+        if(tile.isAdjacentMine()) return;
 
-    //Evaluates all currently revealed tiles and continues to reveal until all tiles are surrounded by mines.
-    public void cascade(){
-        boolean cascades = false;
-
-        for(MinesweeperTile tile : revealedTiles){
-            cascades = scanAdjacent(tile);
+        //If no adjacent mines to the passed tile, reveal all adjacent and recur through each.
+        for(MinesweeperTile scannedTile : revealedTiles){
+            scannedTile.revealTile();
+            scannedTile.scanTile();
         }
-
-        if(cascades) cascade();
-
     }
-
 }
