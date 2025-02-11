@@ -6,8 +6,8 @@ import java.util.ArrayList;
 public class Minesweeper {
 
     //Class parameters. TODO: Create an options window on start to allow users to specify some of these, then allow them to launch the game with the specified parameters from this initial options/menu window
-    int tileSize = 50;
-    int numberOfRows = 20;
+    int tileSize = 40;
+    int numberOfRows = 15;
     int numberOfColumns = numberOfRows;
     int windowWidth = numberOfColumns * tileSize;
     int windowHeight = numberOfRows * tileSize;
@@ -154,6 +154,9 @@ public class Minesweeper {
 
         //If no adjacent mines to the passed tile, reveal all adjacent and recur through each.
         for(MinesweeperTile scannedTile : revealedTiles){
+
+            if(scannedTile.getRevealed()) continue; //Skip tiles that have already been passed through the function..
+
             scannedTile.revealTile();
             scannedTile.scanTile();
         }
