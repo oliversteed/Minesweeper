@@ -125,9 +125,6 @@ public class Minesweeper {
                     //sets the current adjacent tile to currentScan for easier access.
                     MinesweeperTile currentScan = playingBoardArray[r][c];
 
-                    //TODO: This line is making the GameOver() function display wrong number of surrounding mines. Fix this.
-                    //if(currentScan.getRevealed()) continue; //Don't evaluate already evaluated tiles.
-
                     //If a surrounding mine is found, halt the cascading process to begin counting how many mines are adjacent.
                     if(currentScan.isMine()) {
                         tile.setAdjacentMine();
