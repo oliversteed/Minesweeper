@@ -158,7 +158,7 @@ public class Minesweeper {
                 for (MinesweeperTile tile : tileArr) {
 
                     //Don't allow the mine to be generated on the tile that was clicked. Checks if both references hold the same object.
-                    if (tile == clickedTile) return;
+                    if (tile == clickedTile) continue;
 
                     //Stop generating mines once the total has been reached.
                     if (generatedMines == totalMines) continue;
