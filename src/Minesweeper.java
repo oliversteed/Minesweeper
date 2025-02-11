@@ -12,10 +12,8 @@ public class Minesweeper {
     int windowWidth = numberOfColumns * tileSize;
     int windowHeight = numberOfRows * tileSize;
     int totalMines = 40; //We will start with 40 for now.
-    int numRevealedTiles = 0;
 
     boolean gameOverStatus = false;
-    boolean adjacentMine = false;
 
     //Initialise objects for constructing the window.
     JFrame frame = new JFrame("Minesweeper");
@@ -90,8 +88,7 @@ public class Minesweeper {
 
         for(MinesweeperTile[] tileArr : playingBoardArray){
             for(MinesweeperTile tile : tileArr){
-                tile.scanTile();
-                tile.revealTile();
+                if(tile.isMine()) tile.setTileText("X");
             }
         }
     }
@@ -105,14 +102,11 @@ public class Minesweeper {
     public void scanAdjacent(MinesweeperTile tile){
 
         //Stores revealed tiles
-        ArrayList<MinesweeperTile> revealedTiles = new ArrayList<MinesweeperTile>();
+        ArrayList<MinesweeperTile> revealedTiles = new ArrayList<>();
 
         //Gets the coordinates of the passed tile in the 2D array.
         int row = tile.getRow();
         int col = tile.getColumn();
-
-        //whether or not a tile was revealed during the run of this function.
-        boolean revealed = false;
 
         //This iterates through every tile adjacent to the passed tile including itself.
         for(int r = row - 1; r <= row + 1; r++){
@@ -132,7 +126,7 @@ public class Minesweeper {
                     MinesweeperTile currentScan = playingBoardArray[r][c];
 
                     //TODO: This line is making the GameOver() function display wrong number of surrounding mines. Fix this.
-                    if(currentScan.getRevealed()) continue; //Don't evaluate already evaluated tiles.
+                    //if(currentScan.getRevealed()) continue; //Don't evaluate already evaluated tiles.
 
                     //If a surrounding mine is found, halt the cascading process to begin counting how many mines are adjacent.
                     if(currentScan.isMine()) {

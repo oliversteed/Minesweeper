@@ -30,6 +30,9 @@ public class MinesweeperTile extends JButton {
                 //Don't allow interaction with a tile once it has been clicked and revealed.
                 if(isRevealed) return;
 
+                //Don't allow interaction once the game is over.
+                if(currentBoard.isGameOver()) return;
+
                 //If right-clicked, mark the tile instead of revealing and disabling.
                 if(e.getButton() == MouseEvent.BUTTON3){
                     //Unmark if already marked.
