@@ -27,6 +27,8 @@ public class MinesweeperTile extends JButton {
             @Override
             public void mouseReleased(MouseEvent e) {
 
+                currentBoard.generateMines(MinesweeperTile.this);
+
                 //Don't allow interaction with a tile once it has been clicked and revealed.
                 if(isRevealed) return;
 
@@ -46,7 +48,7 @@ public class MinesweeperTile extends JButton {
                     return;
                 }
 
-                //Disabled button once clicked. Set mines to X and safe tiles to O. This is temporary. TODO: Tiles should display number of adjacent mines, not "O"
+                //Disabled button once clicked. Set mines to X and safe tiles to O. This is temporary.
                 scanTile();
                 revealTile();
             }
@@ -84,6 +86,11 @@ public class MinesweeperTile extends JButton {
     //setter for isMine
     public void setMine(){
         isMine = true;
+    }
+
+    //Sets the tile's mine status to false.
+    public void disarmTile(){
+        isMine = false;
     }
 
     //getter for isMine

@@ -12,8 +12,10 @@ public class Minesweeper {
     int windowWidth = numberOfColumns * tileSize;
     int windowHeight = numberOfRows * tileSize;
     int totalMines = 40; //We will start with 40 for now.
+    int generatedMines = 0;
 
     boolean gameOverStatus = false;
+    boolean firstClick = false; //This store whether the first play has been made yet or not.
 
     //Initialise objects for constructing the window.
     JFrame frame = new JFrame("Minesweeper");
@@ -47,10 +49,6 @@ public class Minesweeper {
         playingBoard.setLayout(new GridLayout(numberOfRows, numberOfColumns));
         frame.add(playingBoard);
 
-        //Instantiate the Random object for randomly generating mines.
-        Random rand = new Random();
-        int generatedMines = 0;
-
         //Iterate through the grid and add the MinesweeperTile objects.
         for (int row = 0; row < numberOfRows; row++){
             for (int col = 0; col < numberOfColumns; col++){
@@ -60,17 +58,6 @@ public class Minesweeper {
                 tile.setFocusable(false);
                 tile.setMargin(new Insets(0, 0, 0, 0));
                 tile.setFont(new Font("Arial", Font.PLAIN, 45));
-
-                /*
-                 * Random chance for tile to be a mine. This is not ideal currently...
-                 * This method has a chance to not generated the total number of mines.
-                 * On one test run there was only 1 mine (very rare), which would be an instant win... Not ideal
-                 * TODO: Work out a better method of randomly generating mines.
-                 */
-                if((rand.nextInt(100)+1) <= 10 && generatedMines < totalMines) {
-                    tile.setMine();
-                    generatedMines++;
-                }
 
                 playingBoard.add(tile);
             }
@@ -130,7 +117,6 @@ public class Minesweeper {
                         tile.setAdjacentMine();
                         tile.increaseSurroundingMines();
                         tile.setTileText(Integer.toString(tile.getSurroundingMines()));
-                        //return;
                     }
                     //If the evaluated tile is not a mine, reveal it and add it to the array of revealed tiles.
                     else{
@@ -152,4 +138,43 @@ public class Minesweeper {
             scannedTile.scanTile();
         }
     }
+
+    /*
+    This function deals with generating the mines for the game board. It will only run once the first tile has been clicked.
+    It takes a clicked tile as an argument, to prevent mines being generated on the clicked tile.
+    This loops through the 2D array and randomly applies mines based on a 50/50 chance per mine. It will repeat itself
+    until all mines are generated.
+     */
+    public void generateMines(MinesweeperTile clickedTile){
+
+        //Don't generate mines if this has already been completed.
+        if(firstClick) return;
+
+        //Instantiate the Random object for randomly generating mines.
+        Random rand = new Random();
+
+        while (generatedMines < totalMines) {
+            for (MinesweeperTile[] tileArr : playingBoardArray) {
+                for (MinesweeperTile tile : tileArr) {
+
+                    //Don't allow the mine to be generated on the tile that was clicked. Checks if both references hold the same object.
+                    if (tile == clickedTile) return;
+
+                    //Stop generating mines once the total has been reached.
+                    if (generatedMines == totalMines) continue;
+
+                    //Skip tiles that have already been set as mines.
+                    if (tile.isMine()) continue;
+
+                    if ((rand.nextInt(100) + 1) <= 10 && generatedMines < totalMines) {
+                        tile.setMine();
+                        generatedMines++;
+                    }
+                }
+            }
+        }
+
+        firstClick = true;
+    }
+
 }
