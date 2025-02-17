@@ -46,8 +46,6 @@ public class RetryWindow {
 
         JButton retryButton = new JButton();
 
-        options.add(retryButton);
-
         //When button is clicked, close the current game and open a new one.
         retryButton.addMouseListener(new MouseAdapter() {
             @Override
@@ -57,6 +55,8 @@ public class RetryWindow {
                 closeWindow();
             }
         });
+
+        options.add(retryButton);
     }
 
     public void closeWindow(){
