@@ -1,4 +1,5 @@
 import java.awt.*;
+import java.awt.event.WindowEvent;
 import java.util.Random;
 import javax.swing.*;
 import java.util.ArrayList;
@@ -78,10 +79,16 @@ public class Minesweeper {
                 if(tile.isMine()) tile.setTileText("X");
             }
         }
+
+        GameMaster.createRetryWindow(this, "Game Over");
     }
 
     public boolean isGameOver(){
         return gameOverStatus;
+    }
+
+    public void closeGame(){
+        frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
     }
 
     //Iterates across all adjacent tiles to the passed tile.
