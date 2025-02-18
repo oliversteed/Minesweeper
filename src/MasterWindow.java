@@ -18,7 +18,7 @@ public class MasterWindow {
         //Exiting the master window will terminate the program. This window will be the only constant window across all games.
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.setSize(300, 300);
-        frame.setLocationRelativeTo(null);
+        frame.setLocation(20,20);
         frame.setResizable(false);
         frame.setLayout(new BorderLayout());
 
