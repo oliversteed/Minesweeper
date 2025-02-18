@@ -6,6 +6,8 @@ import java.util.ArrayList;
 
 public class Minesweeper {
 
+    MasterWindow masterWindow;
+
     //Class parameters. TODO: Create an options window on start to allow users to specify some of these, then allow them to launch the game with the specified parameters from this initial options/menu window
     int tileSize = 40;
     int numberOfRows = 15;
@@ -27,12 +29,14 @@ public class Minesweeper {
     //Stores the tiles in a 2D array
     MinesweeperTile[][] playingBoardArray = new MinesweeperTile[numberOfRows][numberOfColumns];
 
-    Minesweeper(){
+    Minesweeper(MasterWindow masterWindow){
+
+        this.masterWindow = masterWindow;
+
         //Set window parameters
         frame.setSize(windowWidth, windowHeight);
         frame.setLocationRelativeTo(null);
         frame.setResizable(false);
-        frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE); //TODO This is breaking the code... Fix
         frame.setLayout(new BorderLayout());
 
         //Set title text parameters
@@ -80,7 +84,7 @@ public class Minesweeper {
             }
         }
 
-        GameMaster.createRetryWindow(this, "Game Over");
+        GameMaster.createRetryWindow(masterWindow,this,"Game Over");
     }
 
     public boolean isGameOver(){
@@ -182,6 +186,14 @@ public class Minesweeper {
         }
 
         firstClick = true;
+    }
+
+    public void increaseScore(){
+        masterWindow.increaseScore();
+    }
+
+    public void resetScore(){
+        masterWindow.resetScore();
     }
 
 }

@@ -8,6 +8,7 @@ public class RetryWindow {
 
     //Store the active game
     Minesweeper currentBoard;
+    MasterWindow masterWindow;
 
     private String title = "default";
 
@@ -17,8 +18,9 @@ public class RetryWindow {
     JPanel titlePanel = new JPanel();
     JPanel options = new JPanel();
 
-    RetryWindow(Minesweeper currentBoard, String title){
+    RetryWindow(MasterWindow masterWindow, Minesweeper currentBoard, String title){
 
+        this.masterWindow = masterWindow;
         this.currentBoard = currentBoard;
         this.title = title;
 
@@ -26,7 +28,6 @@ public class RetryWindow {
         frame.setSize(500, 500);
         frame.setLocationRelativeTo(null);
         frame.setResizable(false);
-        frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE); //TODO this is breaking the code... Fix
         frame.setLayout(new BorderLayout());
 
         //Set title text parameters
@@ -51,7 +52,7 @@ public class RetryWindow {
             @Override
             public void mouseReleased(MouseEvent e) {
                 currentBoard.closeGame();
-                GameMaster.createGame();
+                GameMaster.createGame(masterWindow);
                 closeWindow();
             }
         });

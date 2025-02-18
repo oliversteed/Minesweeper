@@ -48,7 +48,7 @@ public class MinesweeperTile extends JButton {
                     return;
                 }
 
-                //Disabled button once clicked. Set mines to X and safe tiles to O. This is temporary.
+                //Scan the tile and reveal the tile.
                 scanTile();
                 revealTile();
             }
@@ -66,7 +66,11 @@ public class MinesweeperTile extends JButton {
 
         if(isMine) {
             setText("X");
+            currentBoard.resetScore();
             currentBoard.gameOver();
+        }
+        else{
+            currentBoard.increaseScore();
         }
     }
 
