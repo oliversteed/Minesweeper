@@ -25,7 +25,7 @@ public class RetryWindow {
         this.title = title;
 
         //Set window parameters
-        frame.setSize(500, 500);
+        frame.setSize(200, 200);
         frame.setLocationRelativeTo(null);
         frame.setResizable(false);
         frame.setLayout(new BorderLayout());

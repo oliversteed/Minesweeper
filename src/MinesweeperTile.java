@@ -48,9 +48,9 @@ public class MinesweeperTile extends JButton {
                     return;
                 }
 
-                //Scan the tile and reveal the tile.
-                scanTile();
+                //Reveal the tile then scan the tile if a mine wasn't hit.
                 revealTile();
+                if(!currentBoard.isGameOver()) scanTile();
             }
         });
     }
