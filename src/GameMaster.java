@@ -1,6 +1,7 @@
 import com.sun.net.httpserver.Authenticator;
 
 public class GameMaster {
+
     public static void createGame(){
         Minesweeper minesweeper = new Minesweeper();
     }

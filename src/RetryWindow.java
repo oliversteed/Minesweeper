@@ -56,7 +56,11 @@ public class RetryWindow {
             }
         });
 
+        retryButton.setText("Retry");
+
         options.add(retryButton);
+
+        frame.setVisible(true);
     }
 
     public void closeWindow(){
