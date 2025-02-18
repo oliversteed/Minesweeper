@@ -26,7 +26,7 @@ public class RetryWindow {
         frame.setSize(500, 500);
         frame.setLocationRelativeTo(null);
         frame.setResizable(false);
-        frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE); //TODO this is breaking the code... Fix
         frame.setLayout(new BorderLayout());
 
         //Set title text parameters

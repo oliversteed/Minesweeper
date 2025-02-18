@@ -32,7 +32,7 @@ public class Minesweeper {
         frame.setSize(windowWidth, windowHeight);
         frame.setLocationRelativeTo(null);
         frame.setResizable(false);
-        frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE); //TODO This is breaking the code... Fix
         frame.setLayout(new BorderLayout());
 
         //Set title text parameters
